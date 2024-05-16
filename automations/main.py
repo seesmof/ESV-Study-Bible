@@ -9,10 +9,30 @@ install()
 console = Console()
 
 
+def loadFileNames():
+    currentDir = os.path.dirname(os.path.abspath(__file__))
+    fileNamesPath = os.path.join(currentDir, "file_names.json")
+
+    try:
+        with open(fileNamesPath, "r", encoding="utf-8") as f:
+            fileNames = json.load(f)
+    except:
+        fileNames = []
+
+    return fileNames
+
+
+def saveFileNames(fileNames):
+    currentDir = os.path.dirname(os.path.abspath(__file__))
+    fileNamesPath = os.path.join(currentDir, "file_names.json")
+
+    with open(fileNamesPath, "w", encoding="utf-8") as f:
+        json.dump(fileNames, f, indent=2)
+
+
 currentDir = os.path.dirname(os.path.abspath(__file__))
 pagesDir = os.path.join(currentDir, "..", "pages")
-
-fileNames = []
+fileNames = loadFileNames()
 
 
 def formFileNames():
@@ -22,9 +42,7 @@ def formFileNames():
                 continue
             fileNames.append(file)
     fileNames.sort(key=lambda x: int(x.split(".")[0]))
-
-
-formFileNames()
+    saveFileNames(fileNames)
 
 
 def cleanName(name):
@@ -90,15 +108,31 @@ def formPdf():
     console.print(f"Finished forming PDF file")
 
 
+def loadBlankPagesData():
+    blankPagesPath = os.path.join(currentDir, "blank_pages.json")
+    try:
+        with open(blankPagesPath, "r", encoding="utf-8") as f:
+            blankPages = json.load(f)
+    except:
+        blankPages = []
+    return blankPages
+
+
 def checkFileAvailability():
     leastPageNumber = int(fileNames[0].split(".")[0])
     mostPageNumber = int(fileNames[-1].split(".")[0])
+
+    blankPages = loadBlankPagesData()
     missingPages = []
 
     for i in range(leastPageNumber, mostPageNumber + 1):
         if not os.path.exists(os.path.join(pagesDir, str(i) + ".jpg")):
-            console.print(f"[red bold]Page {i} not found[/red bold]")
-            missingPages.append(i)
+            if i not in blankPages:
+                console.print(f"[red bold]Page {i} not found[/red bold]")
+                missingPages.append(i)
+
+    if not missingPages:
+        console.print("[green bold]All pages found![/green bold]")
 
     currentDir = os.path.dirname(os.path.abspath(__file__))
     resultsPath = os.path.join(currentDir, "missing_pages.json")
