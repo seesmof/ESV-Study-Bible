@@ -1,5 +1,6 @@
 import os
 import shutil
+import img2pdf
 from rich.console import Console
 from rich.traceback import install
 
@@ -77,4 +78,15 @@ def makeHundredsPagesFolder():
         console.print(f"Copying '{file}' to '{hundredFolderPath}'")
 
 
-makeHundredsPagesFolder()
+def formPdf():
+    outputFilePath = os.path.join(currentDir, "..", "ESV_Study_Bible.pdf")
+    fileNames.insert(0, "cover.jpg")
+
+    with open(outputFilePath, "wb") as f:
+        allImageFiles = [os.path.join(pagesDir, file) for file in fileNames]
+        convertedImages = img2pdf.convert(allImageFiles)
+        f.write(convertedImages)
+    console.print(f"Finished forming PDF file")
+
+
+formPdf()
