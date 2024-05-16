@@ -32,7 +32,7 @@ def decrementPages():
                 number = file.split(".")[0]
                 newName = f"{int(number)-10}.jpg"
             console.print(f"Renaming '{file}' to '{newName}'")
-            # os.rename(os.path.join(pagesDir, file), os.path.join(pagesDir, newName))
+            os.rename(os.path.join(pagesDir, file), os.path.join(pagesDir, newName))
 
 
 decrementPages()
