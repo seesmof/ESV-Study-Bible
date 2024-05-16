@@ -1,4 +1,5 @@
 import os
+import shutil
 from rich.console import Console
 from rich.traceback import install
 
@@ -8,6 +9,20 @@ console = Console()
 
 currentDir = os.path.dirname(os.path.abspath(__file__))
 pagesDir = os.path.join(currentDir, "..", "pages")
+
+fileNames = []
+
+
+def formFileNames():
+    for file in os.listdir(pagesDir):
+        if file.endswith(".jpg"):
+            if file == "cover.jpg":
+                continue
+            fileNames.append(file)
+    fileNames.sort(key=lambda x: int(x.split(".")[0]))
+
+
+formFileNames()
 
 
 def cleanName(name):
@@ -35,4 +50,31 @@ def decrementPages():
             os.rename(os.path.join(pagesDir, file), os.path.join(pagesDir, newName))
 
 
-decrementPages()
+def makeHundredsPagesFolder():
+    lastFileName = int(fileNames[-1].split(".")[0])
+
+    root = os.path.join(pagesDir, "..", "pages_hundreds")
+    os.makedirs(root, exist_ok=True)
+
+    for i in range(0, lastFileName, 100):
+        hundredFolderName = str(i)
+        hundredFolderPath = os.path.join(root, hundredFolderName)
+        os.makedirs(hundredFolderPath, exist_ok=True)
+
+    for file in os.listdir(pagesDir):
+        if file == "cover.jpg":
+            continue
+
+        hundred = int(file.split(".")[0]) // 100
+
+        hundredFolderName = str(hundred * 100)
+        hundredFolderPath = os.path.join(root, hundredFolderName)
+
+        originalFilePath = os.path.join(pagesDir, file)
+        destinationFilePath = os.path.join(hundredFolderPath, file)
+
+        shutil.copyfile(originalFilePath, destinationFilePath)
+        console.print(f"Copying '{file}' to '{hundredFolderPath}'")
+
+
+makeHundredsPagesFolder()
