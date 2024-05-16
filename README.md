@@ -1,2 +1,3 @@
-# ESV Study Bible
- Contains ESV Study Bible for the glory of Jesus Christ our Holy Lord Almighty Living GOD Most High ✝️💗🙏
+<div align="center">
+  <img src="./logo.jpg" alt="ESV Study Bible Cover" width="333"/>
+</div>
