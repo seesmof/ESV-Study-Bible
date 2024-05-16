@@ -20,8 +20,19 @@ def renameAllPages():
         if file.endswith(".jpg"):
             number = cleanName(file)
             console.print(f"Renaming '{file}' to '{number}'")
-            # os.rename(os.path.join(pagesDir, file), os.path.join(pagesDir, f"{number}"))
+            os.rename(os.path.join(pagesDir, file), os.path.join(pagesDir, f"{number}"))
 
 
-with console.status("Renaming pages..."):
-    renameAllPages()
+def decrementPages():
+    for file in os.listdir(pagesDir):
+        if file.endswith(".jpg"):
+            if file == "0001.jpg":
+                newName = "cover.jpg"
+            else:
+                number = file.split(".")[0]
+                newName = f"{int(number)-10}.jpg"
+            console.print(f"Renaming '{file}' to '{newName}'")
+            # os.rename(os.path.join(pagesDir, file), os.path.join(pagesDir, newName))
+
+
+decrementPages()
